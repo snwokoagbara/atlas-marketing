@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>About Atlas</title>
+<meta name="description" content="Atlas is built for FMCG manufacturers, distributors, wholesalers and pharmacy groups — businesses with hundreds of repeat customers and none of the analyst headcount enterprise software assumes." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap">
+<style>
+    body{margin:0;background:#FAF9F7;}
+    .pg{
+      --paper:#FAF9F7; --surface:#FFFFFF; --panel:#F1EFEA; --panel-cool:#EEF2F1;
+      --ink:#16211C; --ink-body:#4A554F; --ink-muted:#5F6A63; --hairline:#E3E1DB;
+      --accent:#0E6B4C; --wash:#E4F0EA; --amber:#8A6512; --amber-wash:#F7EFDD;
+      --card:0 1px 2px rgba(22,33,28,.04), 0 12px 32px -12px rgba(22,33,28,.10);
+      --lift:0 40px 80px -40px rgba(22,33,28,.28);
+      /* CLAUDE.md §5: font assignments go through --disp, never a hardcoded
+         family. The legal pages already did; these four did not. */
+      --disp:Figtree,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+      font-family:var(--disp);
+      background:#FAF9F7; color:#16211C; font-size:17px; line-height:1.62;
+      -webkit-font-smoothing:antialiased;
+    }
+    .pg *{box-sizing:border-box;}
+    .in{max-width:1200px;margin:0 auto;padding:0 24px;}
+    /* Above the hero band, which is pulled up over this row by a negative
+       margin and would otherwise paint over the entire nav. */
+    .site-nav{background:#FAF9F7;position:relative;z-index:5;}
+    .sec{padding:140px 0;}
+    .sec-sm{padding:110px 0;}
+    a{color:var(--accent);text-decoration:none;}
+    a:hover{color:#0A5239;}
+    h1,h2,h3,p{margin:0;}
+    em{font-style:italic;color:var(--accent);}
+    .h1{font-size:60px;font-weight:600;line-height:1.06;letter-spacing:-.022em;text-wrap:balance;}
+    .h2{font-size:42px;font-weight:600;line-height:1.10;letter-spacing:-.018em;text-wrap:balance;}
+    .h3{font-size:21px;font-weight:600;line-height:1.25;letter-spacing:-.01em;}
+    .lede{font-size:19px;line-height:1.55;color:var(--ink-body);}
+    .body{font-size:17px;line-height:1.62;color:var(--ink-body);}
+    .label{font-size:13px;font-weight:500;line-height:1.4;color:var(--ink-muted);}
+    .stat{font-size:56px;font-weight:600;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;}
+    .btn{
+      display:inline-flex;align-items:center;gap:9px;border:0;cursor:pointer;
+      font-family:inherit;font-size:16px;font-weight:600;padding:15px 26px;border-radius:10px;
+      background:var(--accent);color:#fff;line-height:1;transition:opacity .18s;
+    }
+    .btn:hover{opacity:.9;}
+    /* a.btn:hover's two-class-plus-element specificity (0,0,2,1) beats the
+       page's generic a:hover{color:#0A5239} (0,0,1,1), which otherwise wins
+       over .btn{color:#fff} (0,0,1,0) and drops a solid CTA's text to ~1.4:1
+       contrast against its own green background on hover (Codex, PR #229).
+       .btn.ghost is unaffected — two classes already outrank a:hover. */
+    a.btn:hover{color:#fff;}
+    .btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--hairline);}
+    .btn.ghost:hover{box-shadow:inset 0 0 0 1px #CFCCC4;opacity:1;}
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;background:var(--wash);color:var(--accent);
+      border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;line-height:1;
+    }
+    .card{background:var(--surface);border-radius:20px;box-shadow:var(--card);}
+    /* liquid glass: a lit green core seen through a curved translucent chip */
+    .ic{
+      width:44px;height:44px;border-radius:14px;color:#07422E;
+      display:flex;align-items:center;justify-content:center;
+      position:relative;isolation:isolate;
+      background:
+        radial-gradient(74% 74% at 24% 18%, rgba(66,190,140,.72), transparent 66%),
+        radial-gradient(70% 70% at 86% 90%, rgba(11,92,65,.62), transparent 68%),
+        linear-gradient(155deg, rgba(255,255,255,.58), rgba(255,255,255,.14) 48%, rgba(255,255,255,.34));
+      -webkit-backdrop-filter:blur(10px) saturate(150%);
+      backdrop-filter:blur(10px) saturate(150%);
+      border:1px solid rgba(255,255,255,.72);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,.94),
+        inset 0 -10px 15px -9px rgba(9,74,52,.62),
+        inset 0 0 0 1px rgba(14,107,76,.10),
+        0 9px 18px -9px rgba(22,33,28,.30);
+    }
+    .ic::after{
+      content:"";position:absolute;inset:1px;border-radius:inherit;pointer-events:none;z-index:1;
+      background:linear-gradient(148deg, rgba(255,255,255,.92) 0%, rgba(255,255,255,.34) 21%,
+                 rgba(255,255,255,0) 46%, rgba(255,255,255,.16) 92%);
+    }
+    .ic svg{position:relative;z-index:2;}
+    .shot{border-radius:20px;box-shadow:var(--lift);display:block;}
+    .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
+    .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;}
+    .stack{display:flex;flex-direction:column;}
+
+    /* a tinted band gives the page a colour identity instead of neutral beige */
+    .band{background:linear-gradient(178deg,#E8F1EC 0%,#E3EEE8 58%,#EDF3EF 100%);
+          border-radius:0 0 40px 40px;position:relative;overflow:hidden;}
+    .band::after{content:"";position:absolute;inset:auto -10% -60% 40%;height:70%;
+          background:radial-gradient(60% 60% at 50% 50%,rgba(14,107,76,.07),transparent 70%);
+          pointer-events:none;}
+    .frag{position:absolute;background:#fff;border-radius:14px;
+          box-shadow:0 18px 40px -18px rgba(22,33,28,.30);padding:13px 16px;z-index:3;}
+
+    /* WhatsApp thread — the real surface Atlas runs on */
+    .wa{background:#E9E2D9;border-radius:22px;padding:22px 20px 24px;
+        box-shadow:0 40px 80px -40px rgba(22,33,28,.32);}
+    .wa .b{max-width:82%;border-radius:14px;padding:12px 15px;font-size:15.5px;line-height:1.5;
+        box-shadow:0 1px 1px rgba(22,33,28,.09);position:relative;}
+    .wa .them{background:#FFFFFF;border-top-left-radius:4px;align-self:flex-start;}
+    .wa .me{background:#DAF3C8;border-top-right-radius:4px;align-self:flex-end;}
+    .wa .t{display:block;font-size:11.5px;color:#5E6C62;margin-top:6px;text-align:right;}
+    .wa .rcpt{background:#F3F1EC;border-radius:9px;padding:11px 13px;margin-bottom:9px;}
+    .wa .kv{display:flex;justify-content:space-between;gap:14px;font-size:14px;padding:3px 0;}
+    .wa .kv span:first-child{color:#636F68;}
+    .wa .kv span:last-child{font-weight:600;font-variant-numeric:tabular-nums;}
+    .wa .act{display:flex;gap:8px;margin-top:11px;padding-top:11px;border-top:1px solid #E6E3DC;}
+    .wa .act b{flex:1;text-align:center;font-size:14px;font-weight:600;padding:9px;border-radius:8px;
+        background:var(--accent);color:#fff;}
+    .wa .act i{flex:1;text-align:center;font-size:14px;font-weight:600;padding:9px;border-radius:8px;
+        font-style:normal;color:#4A554F;background:#EDEAE4;}
+
+  
+    .ic.sm{width:32px;height:32px;border-radius:10px;}
+    .faq-mark{flex:none;font-size:22px;font-weight:400;line-height:1.2;color:var(--accent);
+      transition:transform .2s;}
+    .faqq[aria-expanded="true"] .faq-mark{transform:rotate(45deg);}
+    .faq-a{font-size:16px;max-width:66ch;padding:0 0 28px 42px;}
+    .faq-a[hidden]{display:none;}
+    .fld label{display:block;font-size:13px;font-weight:600;color:var(--ink-muted);margin-bottom:7px;}
+    .fld input,.fld select,.fld textarea{
+      width:100%;font-family:inherit;font-size:16px;color:var(--ink);background:var(--paper);
+      border:1px solid var(--hairline);border-radius:10px;padding:13px 15px;
+    }
+    .fld input::placeholder,.fld textarea::placeholder{color:#68746D;}
+    .demo-ok{display:none;text-align:center;padding:20px 6px;}
+    .demo-ok.on{display:block;}
+    .demo-ok h3{font-size:22px;font-weight:600;letter-spacing:-.02em;margin:0 0 10px;}
+    .fld.bad input,.fld.bad select{border-color:var(--crit,#962115);}
+    .fld .err{display:none;font-size:12.5px;color:#962115;margin-top:6px;}
+    .fld.bad .err{display:block;}
+    @media (prefers-reduced-motion:reduce){ .faq-mark{transition:none;} }
+    /* mobile nav: hidden on desktop, shown under the breakpoint below */
+    .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:34px;height:34px;
+        background:none;border:0;cursor:pointer;padding:0;flex:none;}
+    .nav-burger span{display:block;width:20px;height:1.5px;background:#16211C;}
+    .nav-panel{display:none;background:#FFFFFF;border-top:1px solid var(--hairline);}
+    .nav-panel.open{display:block;}
+    .nav-panel .in{display:flex;flex-direction:column;padding:10px 24px 22px;}
+    .nav-panel a{padding:13px 0;font-size:16px;font-weight:500;color:#4A554F;border-bottom:1px solid var(--hairline);}
+    .nav-panel a:last-child{border-bottom:0;}
+
+    /* form-field pairs: side by side on desktop, stacked on mobile */
+    .fld-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+
+    @media (max-width:880px){
+      .sec{padding:88px 0;}
+      .sec-sm{padding:72px 0;}
+      .hero-pad{padding:56px 0 64px !important;}
+      .h1{font-size:40px;letter-spacing:-.02em;}
+      .h2{font-size:30px;letter-spacing:-.015em;}
+      .lede{font-size:17px;}
+      .stat{font-size:42px;}
+      .g3,.g2{grid-template-columns:1fr;}
+      .fld-grid{grid-template-columns:1fr;}
+      /* two-column split sections (hero, testimonial, wedge, faq, closing cta…)
+         carry their columns as inline styles from the generator, so beating
+         them on mobile needs !important rather than a plain override */
+      .split{grid-template-columns:1fr !important;gap:40px !important;}
+      .foot-split{grid-template-columns:1fr !important;gap:36px !important;}
+      .hero-shot-wrap{min-height:0 !important;}
+      .hero-shot{position:static !important;width:100% !important;max-width:100% !important;height:auto !important;}
+      .frag{display:none;}
+
+      .nav-links,.nav-signin{display:none !important;}
+      .nav-burger{display:flex;}
+      .nav-panel.open{display:block;}
+      /* logo + CTA + burger alone still don't fit an 80px-narrower-than-usual
+         row on the smallest phones (320px) at their desktop sizing */
+      .nav-bar{gap:14px !important;}
+      .nav-actions{gap:10px !important;}
+      .nav-bar img{height:22px !important;width:auto !important;}
+      .nav-actions .btn{padding:10px 14px !important;font-size:14px !important;white-space:nowrap;}
+    }
+</style>
+<noscript><style>
+  /* no JS means the burger never opens the panel, so keep the real links --
+     at every width, since burger interactivity needs JS regardless of
+     viewport. */
+  .nav-links,.nav-signin{display:flex !important;}
+  .nav-burger{display:none !important;}
+  @media (max-width:880px){
+    /* Restoring the desktop row as-is overflows below 880px (Codex, PR #249)
+       -- it was sized for the ~800px+ where nav-links never has to share
+       space with the burger on desktop. Dropping the fixed height and
+       letting both rows wrap keeps every link on-screen instead. Scoped to
+       the same breakpoint as everything else -- unscoped, this also broke a
+       DESKTOP viewport with JS disabled into three needless rows (Codex,
+       PR #249, round 2). */
+    .nav-bar{height:auto !important;flex-wrap:wrap !important;row-gap:12px !important;padding:14px 0 !important;}
+    .nav-links{flex-wrap:wrap !important;width:100% !important;margin-left:0 !important;gap:12px 20px !important;order:3;}
+    .nav-actions{width:100% !important;order:2;}
+  }
+</style></noscript>
+</head>
+<body>
+
+<div class="pg">
+  <div class="site-nav">
+    <div class="in nav-bar" style="display:flex;align-items:center;gap:36px;height:84px">
+      <img src="/atlas-mark.png" alt="Atlas" width="351" height="88" style="height:26px;width:auto;display:block" />
+      <div class="nav-links" style="display:flex;gap:30px;margin-left:20px">
+        <a href="/product" style="color:#4A554F;font-size:16px;font-weight:500">What Atlas does</a>
+        <a href="/#how-it-works" style="color:#4A554F;font-size:16px;font-weight:500">How it works</a>
+        <a href="/security" style="color:#4A554F;font-size:16px;font-weight:500">Security</a>
+        <a href="/#faq" style="color:#4A554F;font-size:16px;font-weight:500">FAQ</a>
+        <a href="/about" style="color:var(--accent);font-size:16px;font-weight:600">About</a>
+      </div>
+      <div class="nav-actions" style="display:flex;align-items:center;gap:20px;margin-left:auto">
+        <a href="https://atlas.ricroot.com/auth/login" class="nav-signin" style="color:#4A554F;font-size:16px;font-weight:500">Sign in</a>
+        <a class="btn" href="/#demo" style="padding:12px 22px;font-size:15px">Book a demo</a>
+        <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-panel">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="nav-panel" id="nav-panel" hidden>
+      <div class="in" style="display:flex;flex-direction:column">
+          <a href="/product">What Atlas does</a>
+          <a href="/#how-it-works">How it works</a>
+          <a href="/security">Security</a>
+          <a href="/#faq">FAQ</a>
+          <a href="/about">About</a>
+          <a href="https://atlas.ricroot.com/auth/login">Sign in</a>
+      </div>
+    </div>
+  </div>  <div class="hero-pad" style="padding:88px 0 96px">
+    <div class="in">
+      <div class="chip" style="margin-bottom:28px">About</div>
+      <h1 class="h1" style="max-width:17ch;margin-bottom:26px">Built for the businesses <em>the software industry skipped.</em></h1>
+      <p class="lede" style="max-width:58ch;font-size:21px">Atlas is made for FMCG manufacturers, distributors, wholesalers and pharmacy groups — companies with hundreds of repeat customers, real revenue, and none of the analyst headcount that enterprise software quietly assumes you have.</p>
+    </div>
+  </div>
+
+  <div class="sec-sm" style="padding-top:0">
+    <div class="in split" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:72px">
+      <div>
+        <h2 class="h2" style="margin-bottom:24px">Why it exists</h2>
+        <p class="body" style="font-size:18px;margin-bottom:18px">A distributor with three hundred customers cannot watch three hundred reorder patterns by hand. So they watch the total, and the total looks fine right up until it does not.</p>
+        <p class="body" style="font-size:18px;margin-bottom:18px">The information needed to catch it early is already sitting in their sales records. It has always been there. What was missing was something that would look at it every day and say a name out loud.</p>
+        <p class="body" style="font-size:18px">The same turned out to be true of the books. The problem was never that people could not do the data entry — it was that a receipt has to survive the trip from somebody’s pocket into the system, and often it does not.</p>
+      </div>
+      <div class="stack" style="gap:20px">
+        <div class="card" style="padding:32px 30px 36px">
+          <p class="label" style="margin-bottom:14px">Who it is for</p>
+          <p class="body">FMCG manufacturing and distribution, wholesale, and pharmacy groups. Businesses where the same customers buy again and again, and where a quiet month is the first sign of a lost account.</p>
+        </div>
+        <div class="card" style="padding:32px 30px 36px">
+          <p class="label" style="margin-bottom:14px">Where it runs</p>
+          <p class="body">Nigeria first — Lagos, Port Harcourt and Abuja — because that is where the problem was put in front of us, and because WhatsApp is where this market actually works.</p>
+        </div>
+        <div class="card" style="padding:32px 30px 36px">
+          <p class="label" style="margin-bottom:14px">How it is built</p>
+          <p class="body">On the records you already keep. No new system of record, no migration, no stock-count habit to adopt. If it needs you to change how you work, it has failed.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--panel);padding:110px 0">
+    <div class="in">
+      <h2 class="h2" style="max-width:22ch;margin-bottom:20px">Protect revenue first. <em>Free up cash next.</em></h2>
+      <p class="lede" style="max-width:54ch;margin-bottom:56px">What you get today stands on its own. The rest is the direction of travel, not a promise you are paying for.</p>
+      <div class="g3">
+        <div class="card" style="padding:34px 32px 38px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+            <p class="label">Stage 01</p>
+            <span class="chip" style="font-size:12px;padding:5px 12px">Available now</span>
+          </div>
+          <h3 class="h3" style="margin-bottom:10px">Keep the customers you have</h3>
+          <p class="body" style="font-size:16px">Catch the accounts going quiet, hand your team the calls to make, and keep the records straight along the way.</p>
+        </div>
+        <div class="card" style="padding:34px 32px 38px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+            <p class="label">Stage 02</p>
+            <span class="label" style="font-size:12px;font-weight:600;background:#EDEBE5;border-radius:999px;padding:5px 12px">Coming</span>
+          </div>
+          <h3 class="h3" style="margin-bottom:10px">Free the cash in slow stock</h3>
+          <p class="body" style="font-size:16px">See what is tied up in stock that is not moving — hold these, reorder those — without adopting a stock-count habit.</p>
+        </div>
+        <div class="card" style="padding:34px 32px 38px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+            <p class="label">Stage 03</p>
+            <span class="label" style="font-size:12px;font-weight:600;background:#EDEBE5;border-radius:999px;padding:5px 12px">On the roadmap</span>
+          </div>
+          <h3 class="h3" style="margin-bottom:10px">Fund the reorder</h3>
+          <p class="body" style="font-size:16px">When a customer is ready to buy but cash is tight, pay now or pay as the stock sells.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a id="contact"></a>
+  <div class="sec">
+    <div class="in split" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,520px);gap:80px;align-items:start">
+      <div>
+        <h2 class="h2" style="margin-bottom:24px">Talk to us</h2>
+        <p class="lede" style="max-width:46ch;margin-bottom:32px">Atlas is small enough that you will be talking to the people who built it. That is the point — the mapping work at the start of a pilot is where most of the value gets decided.</p>
+        <div class="stack" style="gap:16px">
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <span style="flex:none;color:var(--accent);margin-top:3px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <p class="body" style="font-size:16px"><strong style="color:#16211C;font-weight:600">Book a demo.</strong> Half an hour, on your own numbers where possible.</p>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <span style="flex:none;color:var(--accent);margin-top:3px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <p class="body" style="font-size:16px"><strong style="color:#16211C;font-weight:600">Send a security questionnaire.</strong> Answered by the person who built the system, not a form letter.</p>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <span style="flex:none;color:var(--accent);margin-top:3px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <p class="body" style="font-size:16px"><strong style="color:#16211C;font-weight:600">Ask a hard question.</strong> If Atlas is wrong for you, it is cheaper for everyone to find out now.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="padding:40px 36px 44px">
+        <!-- action/method are the no-JS fallback. Without them a browser that
+             never ran the inline script GET-submits to the current URL, putting the
+             prospect's name, work email and company into the address bar, the access
+             log and the browser history — and showing them an empty form. A POST to
+             the endpoint is refused as non-JSON, which is visibly a failure rather
+             than a silent leak. -->
+        <form id="contactForm" action="https://atlas.ricroot.com/api/demo-request" method="post" novalidate>
+        <p class="label" style="margin-bottom:22px">Send us a message</p>
+        <div class="fld-grid">
+          <div class="fld"><label for="c-name">Full name</label><input required id="c-name" name="name" type="text" placeholder="Ada Okafor" aria-describedby="c-name-err" /><span class="err" id="c-name-err">Enter your name</span></div>
+          <div class="fld"><label for="c-email">Work email</label><input required id="c-email" name="email" type="email" placeholder="ada@yourbrand.com" aria-describedby="c-email-err" /><span class="err" id="c-email-err">Enter a valid work email</span></div>
+          <div class="fld" style="grid-column:1 / -1"><label for="c-company">Company</label><input required id="c-company" name="company" type="text" placeholder="Your company" aria-describedby="c-company-err" /><span class="err" id="c-company-err">Enter your company</span></div>
+          <div class="fld" style="grid-column:1 / -1">
+            <label for="c-msg">How can we help?</label>
+            <!-- 3985, not 4000: the submit handler prepends "[Contact form] "
+                 (15 chars) before sending. The server truncates the combined
+                 string to 4000, from the end — so at 4000 typed chars, the
+                 last 15 the visitor wrote would be silently cut (Codex, PR
+                 #229). landing.html's textarea sends unprefixed and stays at
+                 4000, matching the server limit exactly. -->
+            <textarea id="c-msg" name="msg" rows="4" maxlength="3985" placeholder="A question, a security questionnaire, or just tell us what you are trying to fix"></textarea>
+          </div>
+        </div>
+        <button class="btn" type="submit" style="width:100%;justify-content:center;margin-top:24px">Send</button>
+
+        <div style="display:flex;align-items:center;gap:14px;margin:26px 0 0">
+          <span style="flex:1;height:1px;background:var(--hairline)"></span>
+          <span class="label" style="font-size:12.5px">or</span>
+          <span style="flex:1;height:1px;background:var(--hairline)"></span>
+        </div>
+        <a class="btn ghost" href="https://calendar.app.google/mcu27mhiSAX87j9g6" target="_blank" rel="noopener" style="width:100%;justify-content:center;margin-top:26px">Book a demo directly</a>
+        <p class="label" style="text-align:center;margin-top:16px;font-size:13px">Reply within one business day</p>
+        </form>
+        <!-- Outside the form on purpose: the success path hides the form,
+             which would hide an error line living inside it. -->
+        <p class="label" id="contactError" hidden style="text-align:center;margin-top:10px;font-size:13px;color:#962115"></p>
+        <div class="demo-ok" id="contactSuccess">
+          <div class="ic" style="margin:0 auto 20px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+          <h3>Got it, <span id="contactOkName">there</span>.</h3>
+          <p class="body">We will reply within one business day.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--panel);padding:96px 0 56px">
+    <div class="in">
+      <div class="foot-split" style="display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:48px">
+        <div>
+          <img src="/atlas-mark.png" alt="Atlas" width="351" height="88" loading="lazy" style="height:24px;width:auto;display:block;margin-bottom:20px" />
+          <p class="body" style="font-size:15px;max-width:34ch">Atlas reads the sales and purchase records you already keep, tells you which customers have stopped ordering, and files every receipt against the right account.</p>
+        </div>
+        <div>
+          <p class="label" style="margin-bottom:18px">What Atlas does</p>
+          <div class="stack" style="gap:11px">
+            <a href="/product" style="color:#4A554F;font-size:15px">Catch accounts going quiet</a>
+            <a href="/product" style="color:#4A554F;font-size:15px">File receipts automatically</a>
+            <a href="/product" style="color:#4A554F;font-size:15px">Answer questions about your data</a>
+            <a href="/#how-it-works" style="color:#4A554F;font-size:15px">How it works</a>
+          </div>
+        </div>
+        <div>
+          <p class="label" style="margin-bottom:18px">Company</p>
+          <div class="stack" style="gap:11px">
+            <a href="/about" style="color:#4A554F;font-size:15px">About Atlas</a>
+            <a href="/security" style="color:#4A554F;font-size:15px">Security &amp; data</a>
+            <a href="/about#contact" style="color:#4A554F;font-size:15px">Contact us</a>
+          </div>
+        </div>
+        <div>
+          <p class="label" style="margin-bottom:18px">Get started</p>
+          <div class="stack" style="gap:11px">
+            <a href="/#demo" style="color:#4A554F;font-size:15px">Book a demo</a>
+            <a href="/#demo" style="color:#4A554F;font-size:15px">Start a 30-day pilot</a>
+            <a href="/privacy-policy" style="color:#4A554F;font-size:15px">Privacy policy</a>
+            <a href="/delete-my-data" style="color:#4A554F;font-size:15px">Delete my data</a>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:64px;padding-top:28px;border-top:1px solid #DFDBD2">
+        <p class="label" style="font-size:13px">© 2026 Atlas · ZeroOne</p>
+        <p class="label" style="font-size:13px;margin-left:auto">Built in Nigeria, for repeat-order businesses</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+(function () {
+  /* ---- mobile nav: hamburger opens a dropdown panel of the same links ---- */
+  var burger = document.querySelector(".nav-burger");
+  var panel = document.getElementById("nav-panel");
+  if (!burger || !panel) return;
+
+  function setOpen(open) {
+    panel.hidden = !open;
+    panel.classList.toggle("open", open);
+    burger.setAttribute("aria-expanded", open ? "true" : "false");
+    burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  }
+
+  burger.addEventListener("click", function () {
+    setOpen(panel.hidden);
+  });
+
+  /* if the viewport grows past the mobile breakpoint while the panel is
+     open, close it so it can't be left stuck open on desktop */
+  var mq = window.matchMedia("(min-width: 881px)");
+  var onChange = function (e) { if (e.matches) setOpen(false); };
+  if (mq.addEventListener) mq.addEventListener("change", onChange);
+  else mq.addListener(onChange);
+})();
+</script>
+
+<script>
+"use strict";
+(function () {
+  /* This repo is the off-origin case the comment used to warn about: these
+     pages are hosted separately from the Atlas app, so a root-relative fetch
+     would resolve against THIS host, not Atlas, and silently fail. Set to the
+     app's origin, matching the absolute <form action="..."> above — that
+     attribute is the no-JS fallback and this constant cannot reach it
+     (Codex, PR #229). Keep both in sync if the app ever moves origins.
+  */
+  var API_ORIGIN = "https://atlas.ricroot.com";
+
+  /* ---- contact form -------------------------------------------------------
+     Reuses /api/demo-request rather than adding a second public POST surface:
+     same table, same Slack ping, and it inherits that endpoint's per-IP hourly
+     cap and field limits for free.
+
+     Two markers keep a contact enquiry distinguishable from a demo lead:
+     `source`, which the endpoint stores in its own column, and a prefix on the
+     message, because the Slack ping the team actually reads prints the message
+     but not the source.
+
+     The endpoint requires name, a valid email and company — so those three are
+     validated here. Without that, a blank company would come back 400 and the
+     page would show its generic failure line for what is really a fixable
+     mistake in the form.
+
+     No Content-Type header on purpose: it keeps a cross-origin submit a
+     "simple request" (no OPTIONS preflight, which this app does not route). */
+  var form = document.getElementById("contactForm");
+  if (!form) return;
+  var ok = document.getElementById("contactSuccess");
+
+  /* aria-describedby on each required input already points at its .err span
+     (see the markup) — .fld .err is display:none until .bad makes it
+     display:block, so a screen reader gets nothing extra while the field is
+     valid and the field's own error text the moment it is not. aria-invalid
+     is the other half: it is what tells assistive tech the field failed at
+     all, before it ever reads why (Codex, PR #229 — .err existed in CSS,
+     unused, since novalidate suppresses the browser's own announcement and
+     nothing had replaced it). */
+  function fail(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.setAttribute("aria-invalid", "true");
+    if (el.closest(".fld")) el.closest(".fld").classList.add("bad");
+  }
+  Array.prototype.forEach.call(form.querySelectorAll("input,textarea"), function (el) {
+    el.addEventListener("input", function () {
+      el.removeAttribute("aria-invalid");
+      if (el.closest(".fld")) el.closest(".fld").classList.remove("bad");
+    });
+  });
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    Array.prototype.forEach.call(form.querySelectorAll(".fld"), function (f) {
+      f.classList.remove("bad");
+    });
+    Array.prototype.forEach.call(form.querySelectorAll("[aria-invalid]"), function (el) {
+      el.removeAttribute("aria-invalid");
+    });
+    var name = document.getElementById("c-name").value.trim();
+    var email = document.getElementById("c-email").value.trim();
+    var company = document.getElementById("c-company").value.trim();
+    var valid = true;
+    if (!name) { fail("c-name"); valid = false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { fail("c-email"); valid = false; }
+    if (!company) { fail("c-company"); valid = false; }
+    if (!valid) {
+      var bad = form.querySelector(".fld.bad input");
+      if (bad) bad.focus();
+      return;
+    }
+
+    var btn = form.querySelector("button[type=submit]");
+    var label = btn.textContent;
+    btn.disabled = true;
+    btn.style.opacity = ".7";
+    btn.textContent = "Sending\u2026";
+
+    var typed = document.getElementById("c-msg").value.trim();
+    fetch(API_ORIGIN + "/api/demo-request", {
+      method: "POST",
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        company: company,
+        message: "[Contact form] " + (typed || "(no message)"),
+        source: "atlas-about-contact"
+      })
+    }).then(function (r) {
+      if (!r.ok) {
+        var e = new Error("bad status " + r.status);
+        e.status = r.status;
+        throw e;
+      }
+      /* A failed first attempt leaves contactError visible; it lives OUTSIDE
+         the form precisely so hiding the form on success does not also hide
+         it — which then means a successful RETRY has to hide it explicitly,
+         or the old "That did not send" message sits next to the success
+         panel forever (Codex, PR #229). */
+      var oldNote = document.getElementById("contactError");
+      if (oldNote) oldNote.hidden = true;
+      form.style.display = "none";
+      if (ok) {
+        ok.classList.add("on");
+        var who = document.getElementById("contactOkName");
+        if (who) who.textContent = name.split(" ")[0] || "there";
+      }
+    }).catch(function (err) {
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      btn.textContent = label;
+      var note = document.getElementById("contactError");
+      if (!note) return;
+      /* The per-IP cap is shared by both public forms, so behind a carrier
+         NAT a colleague's submission can be what stopped yours. "Try again"
+         is the one thing guaranteed not to work for the next hour, and the
+         other form is behind the same counter — so say what happened. */
+      note.textContent =
+        err && err.status === 429
+          ? "We have had several requests from your network in the last hour. Please try again later, or use the booking link above to pick a time now."
+          : err && err.status === 413
+            ? "That message is too long to send. Trim it and we will pick up the rest on the call."
+            : "That did not send \u2014 our side, not yours. Please try again in a few minutes.";
+      note.hidden = false;
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

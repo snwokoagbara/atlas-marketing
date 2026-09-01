@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>What Atlas does — Atlas</title>
+<meta name="description" content="One system: catch customers who have stopped ordering, record every receipt against the right distributor and expense type, and answer questions about your own numbers in plain English." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap">
+<style>
+    body{margin:0;background:#FAF9F7;}
+    .pg{
+      --paper:#FAF9F7; --surface:#FFFFFF; --panel:#F1EFEA; --panel-cool:#EEF2F1;
+      --ink:#16211C; --ink-body:#4A554F; --ink-muted:#5F6A63; --hairline:#E3E1DB;
+      --accent:#0E6B4C; --wash:#E4F0EA; --amber:#8A6512; --amber-wash:#F7EFDD;
+      --card:0 1px 2px rgba(22,33,28,.04), 0 12px 32px -12px rgba(22,33,28,.10);
+      --lift:0 40px 80px -40px rgba(22,33,28,.28);
+      /* CLAUDE.md §5: font assignments go through --disp, never a hardcoded
+         family. The legal pages already did; these four did not. */
+      --disp:Figtree,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+      font-family:var(--disp);
+      background:#FAF9F7; color:#16211C; font-size:17px; line-height:1.62;
+      -webkit-font-smoothing:antialiased;
+    }
+    .pg *{box-sizing:border-box;}
+    .in{max-width:1200px;margin:0 auto;padding:0 24px;}
+    /* Above the hero band, which is pulled up over this row by a negative
+       margin and would otherwise paint over the entire nav. */
+    .site-nav{background:#FAF9F7;position:relative;z-index:5;}
+    .sec{padding:140px 0;}
+    .sec-sm{padding:110px 0;}
+    a{color:var(--accent);text-decoration:none;}
+    a:hover{color:#0A5239;}
+    h1,h2,h3,p{margin:0;}
+    em{font-style:italic;color:var(--accent);}
+    .h1{font-size:60px;font-weight:600;line-height:1.06;letter-spacing:-.022em;text-wrap:balance;}
+    .h2{font-size:42px;font-weight:600;line-height:1.10;letter-spacing:-.018em;text-wrap:balance;}
+    .h3{font-size:21px;font-weight:600;line-height:1.25;letter-spacing:-.01em;}
+    .lede{font-size:19px;line-height:1.55;color:var(--ink-body);}
+    .body{font-size:17px;line-height:1.62;color:var(--ink-body);}
+    .label{font-size:13px;font-weight:500;line-height:1.4;color:var(--ink-muted);}
+    .stat{font-size:56px;font-weight:600;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;}
+    .btn{
+      display:inline-flex;align-items:center;gap:9px;border:0;cursor:pointer;
+      font-family:inherit;font-size:16px;font-weight:600;padding:15px 26px;border-radius:10px;
+      background:var(--accent);color:#fff;line-height:1;transition:opacity .18s;
+    }
+    .btn:hover{opacity:.9;}
+    /* a.btn:hover's two-class-plus-element specificity (0,0,2,1) beats the
+       page's generic a:hover{color:#0A5239} (0,0,1,1), which otherwise wins
+       over .btn{color:#fff} (0,0,1,0) and drops a solid CTA's text to ~1.4:1
+       contrast against its own green background on hover (Codex, PR #229).
+       .btn.ghost is unaffected — two classes already outrank a:hover. */
+    a.btn:hover{color:#fff;}
+    .btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--hairline);}
+    .btn.ghost:hover{box-shadow:inset 0 0 0 1px #CFCCC4;opacity:1;}
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;background:var(--wash);color:var(--accent);
+      border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;line-height:1;
+    }
+    .card{background:var(--surface);border-radius:20px;box-shadow:var(--card);}
+    /* liquid glass: a lit green core seen through a curved translucent chip */
+    .ic{
+      width:44px;height:44px;border-radius:14px;color:#07422E;
+      display:flex;align-items:center;justify-content:center;
+      position:relative;isolation:isolate;
+      background:
+        radial-gradient(74% 74% at 24% 18%, rgba(66,190,140,.72), transparent 66%),
+        radial-gradient(70% 70% at 86% 90%, rgba(11,92,65,.62), transparent 68%),
+        linear-gradient(155deg, rgba(255,255,255,.58), rgba(255,255,255,.14) 48%, rgba(255,255,255,.34));
+      -webkit-backdrop-filter:blur(10px) saturate(150%);
+      backdrop-filter:blur(10px) saturate(150%);
+      border:1px solid rgba(255,255,255,.72);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,.94),
+        inset 0 -10px 15px -9px rgba(9,74,52,.62),
+        inset 0 0 0 1px rgba(14,107,76,.10),
+        0 9px 18px -9px rgba(22,33,28,.30);
+    }
+    .ic::after{
+      content:"";position:absolute;inset:1px;border-radius:inherit;pointer-events:none;z-index:1;
+      background:linear-gradient(148deg, rgba(255,255,255,.92) 0%, rgba(255,255,255,.34) 21%,
+                 rgba(255,255,255,0) 46%, rgba(255,255,255,.16) 92%);
+    }
+    .ic svg{position:relative;z-index:2;}
+    .shot{border-radius:20px;box-shadow:var(--lift);display:block;}
+    .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
+    .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;}
+    .stack{display:flex;flex-direction:column;}
+
+    /* a tinted band gives the page a colour identity instead of neutral beige */
+    .band{background:linear-gradient(178deg,#E8F1EC 0%,#E3EEE8 58%,#EDF3EF 100%);
+          border-radius:0 0 40px 40px;position:relative;overflow:hidden;}
+    .band::after{content:"";position:absolute;inset:auto -10% -60% 40%;height:70%;
+          background:radial-gradient(60% 60% at 50% 50%,rgba(14,107,76,.07),transparent 70%);
+          pointer-events:none;}
+    .frag{position:absolute;background:#fff;border-radius:14px;
+          box-shadow:0 18px 40px -18px rgba(22,33,28,.30);padding:13px 16px;z-index:3;}
+
+    /* WhatsApp thread — the real surface Atlas runs on */
+    .wa{background:#E9E2D9;border-radius:22px;padding:22px 20px 24px;
+        box-shadow:0 40px 80px -40px rgba(22,33,28,.32);}
+    .wa .b{max-width:82%;border-radius:14px;padding:12px 15px;font-size:15.5px;line-height:1.5;
+        box-shadow:0 1px 1px rgba(22,33,28,.09);position:relative;}
+    .wa .them{background:#FFFFFF;border-top-left-radius:4px;align-self:flex-start;}
+    .wa .me{background:#DAF3C8;border-top-right-radius:4px;align-self:flex-end;}
+    .wa .t{display:block;font-size:11.5px;color:#5E6C62;margin-top:6px;text-align:right;}
+    .wa .rcpt{background:#F3F1EC;border-radius:9px;padding:11px 13px;margin-bottom:9px;}
+    .wa .kv{display:flex;justify-content:space-between;gap:14px;font-size:14px;padding:3px 0;}
+    .wa .kv span:first-child{color:#636F68;}
+    .wa .kv span:last-child{font-weight:600;font-variant-numeric:tabular-nums;}
+    .wa .act{display:flex;gap:8px;margin-top:11px;padding-top:11px;border-top:1px solid #E6E3DC;}
+    .wa .act b{flex:1;text-align:center;font-size:14px;font-weight:600;padding:9px;border-radius:8px;
+        background:var(--accent);color:#fff;}
+    .wa .act i{flex:1;text-align:center;font-size:14px;font-weight:600;padding:9px;border-radius:8px;
+        font-style:normal;color:#4A554F;background:#EDEAE4;}
+
+  
+    .ic.sm{width:32px;height:32px;border-radius:10px;}
+    .faq-mark{flex:none;font-size:22px;font-weight:400;line-height:1.2;color:var(--accent);
+      transition:transform .2s;}
+    .faqq[aria-expanded="true"] .faq-mark{transform:rotate(45deg);}
+    .faq-a{font-size:16px;max-width:66ch;padding:0 0 28px 42px;}
+    .faq-a[hidden]{display:none;}
+    .demo-ok{display:none;text-align:center;padding:20px 6px;}
+    .demo-ok.on{display:block;}
+    .demo-ok h3{font-size:22px;font-weight:600;letter-spacing:-.02em;margin:0 0 10px;}
+    .fld.bad input,.fld.bad select{border-color:var(--crit,#962115);}
+    .fld .err{display:none;font-size:12.5px;color:#962115;margin-top:6px;}
+    .fld.bad .err{display:block;}
+    @media (prefers-reduced-motion:reduce){ .faq-mark{transition:none;} }
+    /* mobile nav: hidden on desktop, shown under the breakpoint below */
+    .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:34px;height:34px;
+        background:none;border:0;cursor:pointer;padding:0;flex:none;}
+    .nav-burger span{display:block;width:20px;height:1.5px;background:#16211C;}
+    .nav-panel{display:none;background:#FFFFFF;border-top:1px solid var(--hairline);}
+    .nav-panel.open{display:block;}
+    .nav-panel .in{display:flex;flex-direction:column;padding:10px 24px 22px;}
+    .nav-panel a{padding:13px 0;font-size:16px;font-weight:500;color:#4A554F;border-bottom:1px solid var(--hairline);}
+    .nav-panel a:last-child{border-bottom:0;}
+
+    /* form-field pairs: side by side on desktop, stacked on mobile */
+    .fld-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+
+    @media (max-width:880px){
+      .sec{padding:88px 0;}
+      .sec-sm{padding:72px 0;}
+      .hero-pad{padding:56px 0 64px !important;}
+      .h1{font-size:40px;letter-spacing:-.02em;}
+      .h2{font-size:30px;letter-spacing:-.015em;}
+      .lede{font-size:17px;}
+      .stat{font-size:42px;}
+      .g3,.g2{grid-template-columns:1fr;}
+      .fld-grid{grid-template-columns:1fr;}
+      /* two-column split sections (hero, testimonial, wedge, faq, closing cta…)
+         carry their columns as inline styles from the generator, so beating
+         them on mobile needs !important rather than a plain override */
+      .split{grid-template-columns:1fr !important;gap:40px !important;}
+      .foot-split{grid-template-columns:1fr !important;gap:36px !important;}
+      .hero-shot-wrap{min-height:0 !important;}
+      .hero-shot{position:static !important;width:100% !important;max-width:100% !important;height:auto !important;}
+      .frag{display:none;}
+
+      .nav-links,.nav-signin{display:none !important;}
+      .nav-burger{display:flex;}
+      .nav-panel.open{display:block;}
+      /* logo + CTA + burger alone still don't fit an 80px-narrower-than-usual
+         row on the smallest phones (320px) at their desktop sizing */
+      .nav-bar{gap:14px !important;}
+      .nav-actions{gap:10px !important;}
+      .nav-bar img{height:22px !important;width:auto !important;}
+      .nav-actions .btn{padding:10px 14px !important;font-size:14px !important;white-space:nowrap;}
+    }
+</style>
+<noscript><style>
+  /* no JS means the burger never opens the panel, so keep the real links --
+     at every width, since burger interactivity needs JS regardless of
+     viewport. */
+  .nav-links,.nav-signin{display:flex !important;}
+  .nav-burger{display:none !important;}
+  @media (max-width:880px){
+    /* Restoring the desktop row as-is overflows below 880px (Codex, PR #249)
+       -- it was sized for the ~800px+ where nav-links never has to share
+       space with the burger on desktop. Dropping the fixed height and
+       letting both rows wrap keeps every link on-screen instead. Scoped to
+       the same breakpoint as everything else -- unscoped, this also broke a
+       DESKTOP viewport with JS disabled into three needless rows (Codex,
+       PR #249, round 2). */
+    .nav-bar{height:auto !important;flex-wrap:wrap !important;row-gap:12px !important;padding:14px 0 !important;}
+    .nav-links{flex-wrap:wrap !important;width:100% !important;margin-left:0 !important;gap:12px 20px !important;order:3;}
+    .nav-actions{width:100% !important;order:2;}
+  }
+</style></noscript>
+</head>
+<body>
+
+<div class="pg">
+  <div class="site-nav">
+    <div class="in nav-bar" style="display:flex;align-items:center;gap:36px;height:84px">
+      <img src="/atlas-mark.png" alt="Atlas" width="351" height="88" style="height:26px;width:auto;display:block" />
+      <div class="nav-links" style="display:flex;gap:30px;margin-left:20px">
+        <a href="/product" style="color:var(--accent);font-size:16px;font-weight:600">What Atlas does</a>
+        <a href="/#how-it-works" style="color:#4A554F;font-size:16px;font-weight:500">How it works</a>
+        <a href="/security" style="color:#4A554F;font-size:16px;font-weight:500">Security</a>
+        <a href="/#faq" style="color:#4A554F;font-size:16px;font-weight:500">FAQ</a>
+        <a href="/about" style="color:#4A554F;font-size:16px;font-weight:500">About</a>
+      </div>
+      <div class="nav-actions" style="display:flex;align-items:center;gap:20px;margin-left:auto">
+        <a href="https://atlas.ricroot.com/auth/login" class="nav-signin" style="color:#4A554F;font-size:16px;font-weight:500">Sign in</a>
+        <a class="btn" href="/#demo" style="padding:12px 22px;font-size:15px">Book a demo</a>
+        <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-panel">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="nav-panel" id="nav-panel" hidden>
+      <div class="in" style="display:flex;flex-direction:column">
+          <a href="/product">What Atlas does</a>
+          <a href="/#how-it-works">How it works</a>
+          <a href="/security">Security</a>
+          <a href="/#faq">FAQ</a>
+          <a href="/about">About</a>
+          <a href="https://atlas.ricroot.com/auth/login">Sign in</a>
+      </div>
+    </div>
+  </div>  <div class="hero-pad" style="padding:88px 0 96px">
+    <div class="in">
+      <div class="chip" style="margin-bottom:28px">What Atlas does</div>
+      <h1 class="h1" style="max-width:17ch;margin-bottom:26px">One system. <em>Three things it stops costing you.</em></h1>
+      <p class="lede" style="max-width:58ch;font-size:21px">Atlas reads the sales and purchase records you already keep. It catches customers who have quietly stopped ordering, records every receipt against the right account without anyone retyping it, and answers questions about your own numbers in plain English.</p>
+    </div>
+  </div>
+
+  <div style="background:var(--panel);padding:120px 0">
+    <div class="in">
+      <h2 class="h2" style="max-width:18ch;margin-bottom:20px">You find out in days, <em>not at quarter close.</em></h2>
+      <p class="lede" style="max-width:58ch;margin-bottom:56px">A customer who has ordered every fourteen days for a year, now on day nineteen, is a problem you can still fix. The same customer three months later is a problem you have lost. Atlas holds a separate baseline for every account and checks all of them every morning.</p>
+      <div class="g3" style="margin-bottom:64px">
+          <div class="card" style="padding:32px 30px 36px">
+            <div class="ic" style="margin-bottom:22px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg></div>
+            <h3 class="h3" style="margin-bottom:9px">Ranked by what is at stake</h3>
+            <p class="body" style="font-size:16px">Every quiet account with its last order, its own average cycle, and how many cycles it has missed — biggest number first.</p>
+          </div>
+          <div class="card" style="padding:32px 30px 36px">
+            <div class="ic" style="margin-bottom:22px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3m0 12v3m9-9h-3M6 12H3m14.4-6.4-2.1 2.1M8.7 15.3l-2.1 2.1m10.8 0-2.1-2.1M8.7 8.7 6.6 6.6"></path><circle cx="12" cy="12" r="3"></circle></svg></div>
+            <h3 class="h3" style="margin-bottom:9px">With the reason and the message</h3>
+            <p class="body" style="font-size:16px">Why they slipped, what to offer, and a draft you can send as it is — so the call takes two minutes, not twenty.</p>
+          </div>
+          <div class="card" style="padding:32px 30px 36px">
+            <div class="ic" style="margin-bottom:22px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"></rect><path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path></svg></div>
+            <h3 class="h3" style="margin-bottom:9px">Delivered where your team already is</h3>
+            <p class="body" style="font-size:16px">Slack or WhatsApp, every week. Nobody has to remember to open a dashboard.</p>
+          </div>
+      </div>
+      <div style="display:flex;justify-content:center;margin-bottom:36px">
+        <img src="/shot-calllist.jpg" alt="The Atlas call list ranked by revenue at risk" width="980" height="363" loading="lazy" class="shot" style="width:980px;max-width:100%" />
+      </div>
+      <p class="label" style="text-align:center">Live console · customer names anonymised</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="in">
+      <h2 class="h2" style="max-width:18ch;margin-bottom:20px">Nothing goes missing <em>between the receipt and the ledger.</em></h2>
+      <p class="lede" style="max-width:58ch;margin-bottom:56px">Data entry is where money quietly goes wrong — a receipt somebody forgot to upload, an amount keyed twice, a supplier bill that never made it in. Atlas closes the gap between someone holding a receipt and it being recorded correctly.</p>
+      <div class="g3" style="margin-bottom:64px">
+          <div class="card" style="padding:32px 30px 36px">
+            <div class="ic" style="margin-bottom:22px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"></path></svg></div>
+            <h3 class="h3" style="margin-bottom:9px">It arrives over WhatsApp</h3>
+            <p class="body" style="font-size:16px">No portal, no upload anyone has to remember. Staff send it the way they already message each other.</p>
+          </div>
+          <div class="card" style="padding:32px 30px 36px">
+            <div class="ic" style="margin-bottom:22px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5M9 13h6M9 17h4"></path></svg></div>
+            <h3 class="h3" style="margin-bottom:9px">Read, matched, checked</h3>
+            <p class="body" style="font-size:16px">Supplier, amount, date and bank reference pulled out; the right account chosen; checked against what you have already recorded so a duplicate is caught before it is booked.</p>
+          </div>
+          <div class="card" style="padding:32px 30px 36px">
+            <div class="ic" style="margin-bottom:22px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+            <h3 class="h3" style="margin-bottom:9px">Approved in one click</h3>
+            <p class="body" style="font-size:16px">Nothing enters your accounts until you say so. Every decision is logged and anything can be reversed.</p>
+          </div>
+      </div>
+      <div style="display:flex;justify-content:center;margin-bottom:36px">
+        <img src="/shot-accountant.jpg" alt="Atlas showing receipts processed and prepared supplier bills awaiting review" width="980" height="379" loading="lazy" class="shot" style="width:980px;max-width:100%" />
+      </div>
+      <p class="label" style="text-align:center">Live console · supplier names anonymised</p>
+    </div>
+  </div>
+
+  <div style="background:var(--panel-cool);padding:120px 0">
+    <div class="in split" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:72px;align-items:center">
+      <div>
+        <h2 class="h2" style="margin-bottom:20px">Get the answer today, <em>not next Tuesday.</em></h2>
+        <p class="lede" style="margin-bottom:32px">How much to make next month. Which region went soft. What a customer bought before they stopped. Ask in plain English and the answer comes off your own books.</p>
+        <div class="stack" style="gap:16px">
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <span style="flex:none;color:var(--accent);margin-top:3px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <p class="body" style="font-size:16px"><strong style="color:#16211C;font-weight:600">Production planning without the guesswork.</strong> See what last quarter actually did, by product, before you commit a run.</p>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <span style="flex:none;color:var(--accent);margin-top:3px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <p class="body" style="font-size:16px"><strong style="color:#16211C;font-weight:600">Your numbers, not an estimate.</strong> Every answer comes off your own transaction history, and shows what it counted.</p>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <span style="flex:none;color:var(--accent);margin-top:3px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <p class="body" style="font-size:16px"><strong style="color:#16211C;font-weight:600">Anyone on the team can ask.</strong> No training, no query language, no report queue.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="padding:32px 30px 36px">
+        <p class="label" style="margin-bottom:20px">Asked in the console</p>
+        <div class="stack" style="gap:20px">
+          <div style="background:var(--wash);border-radius:16px 16px 16px 4px;padding:16px 20px">
+            <p class="body" style="font-size:16px;color:var(--ink)">Which northern accounts slowed down last quarter, and what were they buying before they did?</p>
+          </div>
+          <div style="background:var(--paper);border-radius:16px 16px 4px 16px;padding:16px 20px">
+            <p class="body" style="font-size:16px">Atlas answers from your own sales history, and shows you what it counted.</p>
+          </div>
+        </div>
+        <p class="label" style="margin-top:22px;font-size:12.5px">Illustrative exchange. The answer shape is real; the wording depends on your data.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="in">
+      <h2 class="h2" style="max-width:20ch;margin-bottom:20px">However your records live, <em>Atlas reads them.</em></h2>
+      <p class="lede" style="max-width:54ch;margin-bottom:56px">A pilot needs one sales export. A standing connection is a choice you make afterwards, once you have seen it work.</p>
+      <div class="g3" style="margin-bottom:96px">
+          <div class="card" style="padding:32px 30px 36px">
+            <div class="ic" style="margin-bottom:22px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h9"></path><circle cx="18.5" cy="17" r="2.5"></circle></svg></div>
+            <h3 class="h3" style="margin-bottom:9px">Odoo</h3>
+            <p class="body" style="font-size:16px">A live connection to invoices and bills, with anything that touches money gated behind your approval.</p>
+          </div>
+          <div class="card" style="padding:32px 30px 36px">
+            <div class="ic" style="margin-bottom:22px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h9"></path><circle cx="18.5" cy="17" r="2.5"></circle></svg></div>
+            <h3 class="h3" style="margin-bottom:9px">QuickBooks and CRM systems</h3>
+            <p class="body" style="font-size:16px">Read on a schedule, mapped once, leaving your system of record exactly where it is.</p>
+          </div>
+          <div class="card" style="padding:32px 30px 36px">
+            <div class="ic" style="margin-bottom:22px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h9"></path><circle cx="18.5" cy="17" r="2.5"></circle></svg></div>
+            <h3 class="h3" style="margin-bottom:9px">CSV or Excel export</h3>
+            <p class="body" style="font-size:16px">The fastest way to start. One export, and you have a call list inside 48 hours.</p>
+          </div>
+      </div>
+
+      <h2 class="h2" style="max-width:20ch;margin-bottom:20px">What comes <em>after retention.</em></h2>
+      <p class="lede" style="max-width:54ch;margin-bottom:56px">What you get today stands on its own. The rest is the direction of travel.</p>
+      <div class="g3">
+          <div class="card" style="padding:32px 30px 36px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-3-6.2"></path><path d="M20 4v5h-5"></path></svg></div><span class="label" style="font-size:12px;font-weight:600;background:#EDEBE5;border-radius:999px;padding:5px 12px">Next</span></div>
+            <h3 class="h3" style="margin-bottom:9px">Winning back the ones already gone</h3>
+            <p class="body" style="font-size:16px">Lapsed high-value accounts that crossed the line months ago, worth a deliberate push rather than a phone call.</p>
+          </div>
+          <div class="card" style="padding:32px 30px 36px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"></path><path d="M21 7v5h-5"></path></svg></div><span class="label" style="font-size:12px;font-weight:600;background:#EDEBE5;border-radius:999px;padding:5px 12px">Later</span></div>
+            <h3 class="h3" style="margin-bottom:9px">Cash out of slow stock</h3>
+            <p class="body" style="font-size:16px">See what is tied up in stock that is not moving — hold these, reorder those — without adopting a stock-count habit.</p>
+          </div>
+          <div class="card" style="padding:32px 30px 36px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2.5-7 4 14L15.5 12H22"></path></svg></div><span class="label" style="font-size:12px;font-weight:600;background:#EDEBE5;border-radius:999px;padding:5px 12px">Later</span></div>
+            <h3 class="h3" style="margin-bottom:9px">Funding the reorder</h3>
+            <p class="body" style="font-size:16px">When a customer is ready to buy but cash is tight, pay now or pay as the stock sells.</p>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="in" style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:24px">
+      <h2 class="h2" style="max-width:20ch">See it on <em>your own numbers.</em></h2>
+      <p class="lede" style="max-width:52ch">Send one sales export and we will show you which of your accounts have gone quiet and what they are worth, within 48 hours.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center">
+        <a class="btn" href="/#demo">Book a demo</a>
+        <a class="btn ghost" href="/about#contact">Contact us</a>
+      </div>
+      <p class="label" style="margin-top:22px">48-hour setup · 30-day pilot · nothing to install</p>
+    </div>
+  </div>  <div style="background:var(--panel);padding:96px 0 56px">
+    <div class="in">
+      <div class="foot-split" style="display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:48px">
+        <div>
+          <img src="/atlas-mark.png" alt="Atlas" width="351" height="88" loading="lazy" style="height:24px;width:auto;display:block;margin-bottom:20px" />
+          <p class="body" style="font-size:15px;max-width:34ch">Atlas reads the sales and purchase records you already keep, tells you which customers have stopped ordering, and files every receipt against the right account.</p>
+        </div>
+        <div>
+          <p class="label" style="margin-bottom:18px">What Atlas does</p>
+          <div class="stack" style="gap:11px">
+            <a href="/product" style="color:#4A554F;font-size:15px">Catch accounts going quiet</a>
+            <a href="/product" style="color:#4A554F;font-size:15px">File receipts automatically</a>
+            <a href="/product" style="color:#4A554F;font-size:15px">Answer questions about your data</a>
+            <a href="/#how-it-works" style="color:#4A554F;font-size:15px">How it works</a>
+          </div>
+        </div>
+        <div>
+          <p class="label" style="margin-bottom:18px">Company</p>
+          <div class="stack" style="gap:11px">
+            <a href="/about" style="color:#4A554F;font-size:15px">About Atlas</a>
+            <a href="/security" style="color:#4A554F;font-size:15px">Security &amp; data</a>
+            <a href="/about#contact" style="color:#4A554F;font-size:15px">Contact us</a>
+          </div>
+        </div>
+        <div>
+          <p class="label" style="margin-bottom:18px">Get started</p>
+          <div class="stack" style="gap:11px">
+            <a href="/#demo" style="color:#4A554F;font-size:15px">Book a demo</a>
+            <a href="/#demo" style="color:#4A554F;font-size:15px">Start a 30-day pilot</a>
+            <a href="/privacy-policy" style="color:#4A554F;font-size:15px">Privacy policy</a>
+            <a href="/delete-my-data" style="color:#4A554F;font-size:15px">Delete my data</a>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:64px;padding-top:28px;border-top:1px solid #DFDBD2">
+        <p class="label" style="font-size:13px">© 2026 Atlas · ZeroOne</p>
+        <p class="label" style="font-size:13px;margin-left:auto">Built in Nigeria, for repeat-order businesses</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+(function () {
+  /* ---- mobile nav: hamburger opens a dropdown panel of the same links ---- */
+  var burger = document.querySelector(".nav-burger");
+  var panel = document.getElementById("nav-panel");
+  if (!burger || !panel) return;
+
+  function setOpen(open) {
+    panel.hidden = !open;
+    panel.classList.toggle("open", open);
+    burger.setAttribute("aria-expanded", open ? "true" : "false");
+    burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  }
+
+  burger.addEventListener("click", function () {
+    setOpen(panel.hidden);
+  });
+
+  /* if the viewport grows past the mobile breakpoint while the panel is
+     open, close it so it can't be left stuck open on desktop */
+  var mq = window.matchMedia("(min-width: 881px)");
+  var onChange = function (e) { if (e.matches) setOpen(false); };
+  if (mq.addEventListener) mq.addEventListener("change", onChange);
+  else mq.addListener(onChange);
+})();
+</script>
+</body>
+</html>
