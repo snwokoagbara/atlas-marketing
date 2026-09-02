@@ -17,7 +17,7 @@ edits made here need to be hand-applied to both places.
 
 | File | Route |
 |---|---|
-| `landing.html` | `/` |
+| `index.html` | `/` |
 | `product.html` | `/product` |
 | `security.html` | `/security` |
 | `about.html` | `/about` |
@@ -38,11 +38,23 @@ you change the brand (font, colors, nav links), change all six by hand.
 ## Hosting
 
 Flat static files — any static host works. The five pages other than
-`landing.html` need clean-URL routing (`/product` → `product.html`, etc.);
-Netlify, Vercel and Cloudflare Pages do this by default for a file of the same
-name, and an nginx/Caddy `try_files` rule works too. `landing.html` itself
-needs to be served at `/` (e.g. an index rewrite), since a bare static host
-won't do that for a non-`index.html` file automatically.
+`index.html` need clean-URL routing (`/product` → `product.html`, etc.);
+Netlify, Vercel, Cloudflare Pages and GitHub Pages all do this by default for
+a file of the same name, and an nginx/Caddy `try_files` rule works too.
+
+**Deployed on GitHub Pages** (repo Settings → Pages → Deploy from a branch →
+`master` → `/`), `.nojekyll` present so GitHub serves the raw files instead of
+running its default Jekyll build. Default URL:
+`https://snwokoagbara.github.io/atlas-marketing/`.
+
+**That default URL serves the site under a `/atlas-marketing/` path prefix,
+not domain root — every asset and nav link here is root-absolute
+(`/atlas-mark.png`, `/product`, ...) on purpose, to match the live
+`atlas.ricroot.com` paths exactly, so on the bare `github.io` URL every one of
+those 404s.** This only resolves correctly once a custom domain is attached
+(Settings → Pages → Custom domain, plus a `CNAME` file here and a DNS record
+at the registrar — none of which is set up yet). Until then, treat the
+`github.io` URL as a build-succeeded check, not a working preview.
 
 ## Off-origin by design
 
@@ -68,5 +80,5 @@ no-JS fallback attribute.
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000/landing.html` (or any other page directly by
+Then open `http://localhost:8000/index.html` (or any other page directly by
 filename — clean-URL routing isn't available on a bare file server).
